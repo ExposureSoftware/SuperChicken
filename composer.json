@@ -10,5 +10,10 @@
   },
   "require": {
     "tightenco/collect": "^5.4"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "composer dump-autoload"
+    ]
   }
 }
