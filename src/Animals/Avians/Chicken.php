@@ -86,7 +86,10 @@ class Chicken extends Bird
     public function isStarving()
     {
         $this->checkIfLiving();
-        return !$this->satiated;
+        $starved = !$this->satiated;
+        $this->satiated = false;
+
+        return $starved;
     }
 
     /**
