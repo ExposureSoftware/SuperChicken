@@ -10,6 +10,7 @@ namespace ExposureSoftware\SuperChicken;
 
 
 use ExposureSoftware\SuperChicken\Animals\Avians\Chicken;
+use ExposureSoftware\SuperChicken\Exceptions\Necromancy;
 use Illuminate\Support\Collection;
 
 /**
@@ -34,7 +35,7 @@ class Farm
     public function __construct(int $acres = null)
     {
         $this->claims = collect();
-        $this->stakeClaim($acres ?: mt_rand(1, 20));
+        $this->stakeClaim($acres ?: 1);
     }
 
     /**
@@ -72,24 +73,33 @@ class Farm
      */
     public function population()
     {
-        return $this->claims->sum(function (Claim $claim) {
-            return $claim->chickens()->count();
-        });
+        return $this->chickens()->count();
     }
 
+    /**
+     * Feeds as many Chickens to their heart's desire as possible with current food supply.
+     */
     public function feed()
     {
         $this->claims->each(function (Claim $claim) {
             $claim->chickens()->each(function (Chicken $chicken) {
-                do {
-                    $satiated = $chicken->eat(1);
+                $satiated = false;
+                while (!$satiated && $this->units_food > 0) {
+                    try {
+                        $satiated = $chicken->eat(1);
+
+                    } catch (Necromancy $exception) {
+                        continue;
+                    }
                     $this->units_food -= 1;
-                } while (!$satiated && $this->units_food > 0);
+                };
             });
         });
     }
 
     /**
+     * Adds food units to the Farm.
+     *
      * @param int $units_food
      *
      * @return int
@@ -102,10 +112,68 @@ class Farm
     }
 
     /**
+     * Returns the number of food units stored in the Farm.
+     *
      * @return int
      */
     public function foodSupply()
     {
         return $this->units_food;
+    }
+
+    /**
+     * Sets the farm to a heightened reproductive state.
+     * OK, this variable is a little silly.
+     *
+     * @param bool $giggity
+     *
+     * @return bool
+     */
+    public function stimulated(bool $giggity = null)
+    {
+        if (!is_null($giggity)) {
+            $this->hot_chicks = $giggity;
+        }
+
+        return $this->hot_chicks;
+    }
+
+    /**
+     * Retrieves all the Chickens in all the Claims of the Farm.
+     *
+     * @return Collection
+     */
+    public function chickens()
+    {
+        $chickens = collect();
+        $this->claims->each(function (Claim $claim) use (&$chickens) {
+            $chickens = $chickens->merge($claim->chickens());
+        });
+
+        return $chickens;
+    }
+
+    /**
+     * Returns the number of eggs laid by the Farm's Chickens.
+     *
+     * @return int
+     */
+    public function collectEggs()
+    {
+        return $this->chickens()->sum(function (Chicken $chicken) {
+            return $chicken->laidEgg() ? 1 : 0;
+        });
+    }
+
+    /**
+     * Murders the given number of Chickens.
+     *
+     * @param int $chickens
+     */
+    public function cull(int $chickens)
+    {
+        for ($i = 0; $i < $chickens; $i++) {
+            $this->claims->random()->chickens()->random()->expire();
+        }
     }
 }

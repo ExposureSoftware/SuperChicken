@@ -11,6 +11,7 @@ namespace Tests;
 
 use ExposureSoftware\SuperChicken\Claim;
 use ExposureSoftware\SuperChicken\Farm;
+use Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
 
 class FarmTest extends TestCase
@@ -51,5 +52,40 @@ class FarmTest extends TestCase
     public function testFoodSupply()
     {
         $this->assertTrue(is_int((new Farm())->foodSupply()));
+    }
+
+    public function testStimulation()
+    {
+        $previous = (new Farm())->stimulated();
+
+        $this->assertTrue((new Farm())->stimulated(!$previous) === !$previous);
+    }
+
+    public function testChickens()
+    {
+        $farm = new Farm();
+
+        $this->assertInstanceOf(Collection::class, $farm->chickens());
+        $this->assertFalse($farm->chickens()->isEmpty());
+    }
+
+    public function testFeed()
+    {
+        $farm = new Farm();
+
+        $farm->store(3);
+        $farm->feed();
+
+        $this->assertTrue($farm->foodSupply() >= 0);
+    }
+
+    public function testCull()
+    {
+        $farm = new Farm();
+        $population = $farm->population();
+
+        $farm->cull(2);
+
+        $this->assertEquals($population - 2, $farm->population());
     }
 }
