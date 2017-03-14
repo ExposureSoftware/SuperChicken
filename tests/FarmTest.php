@@ -88,4 +88,9 @@ class FarmTest extends TestCase
 
         $this->assertEquals($population - 2, $farm->population());
     }
+
+    public function testCollectEggs()
+    {
+        $this->assertTrue(is_int((new Farm())->collectEggs()));
+    }
 }
