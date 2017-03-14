@@ -23,5 +23,8 @@ The Chicken to end all Chickens
 From the install directory change directory to the `cli` directory and run `php farm.php`.
 
 ## Development
+### Build Status
+[![Build Status](https://travis-ci.org/ExposureSoftware/SuperChicken.svg?branch=master)](https://travis-ci.org/ExposureSoftware/SuperChicken)
+
 ### Testing
 Tests are run via PHPUnit. Run `php vendor/phpunit/phpunit/phpunit` from the top-level directory to start tests.
