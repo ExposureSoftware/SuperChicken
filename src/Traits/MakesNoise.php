@@ -16,14 +16,11 @@ namespace ExposureSoftware\SuperChicken\Traits;
  */
 trait MakesNoise
 {
-    /** @var string $sound */
-    protected $sound = '';
-
     /**
      * @return string
      */
     public function vocalize()
     {
-        return $this->sound;
+        return isset($this->sound) ? $this->sound : '';
     }
 }
