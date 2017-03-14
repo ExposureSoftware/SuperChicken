@@ -42,6 +42,7 @@ class Night
             'successful_hunts' => $this->wakeNocturnalAnimals(),
             'noises'           => $this->noises(),
             'starved_chickens' => $this->digestFood(),
+            'chicks'           => !is_null($this->chickenLove()),
         ]);
     }
 
@@ -97,5 +98,21 @@ class Night
         });
 
         return $starved_chickens->count();
+    }
+
+    /**
+     * Makes more Chickens, all natural.
+     *
+     * @return null|Chicken
+     */
+    private function chickenLove()
+    {
+        $chicken = null;
+
+        if ($this->farm->stimulated()) {
+            $chicken = $this->farm->hatchEgg();
+        }
+
+        return $chicken;
     }
 }

@@ -64,6 +64,24 @@ class Claim
     }
 
     /**
+     * The miracle of life.
+     *
+     * @return Chicken
+     */
+    public function hatchEgg()
+    {
+        $chick = new Chicken();
+
+        if ($chick->isRooster()) {
+            $this->roosters->push($chick);
+        } else {
+            $this->hens->push($chick);
+        }
+
+        return $chick;
+    }
+
+    /**
      * Populates the claim.
      *
      * According to http://www.plamondon.com/wp/how-many-chickens-per-acre/ the ideal number is 50

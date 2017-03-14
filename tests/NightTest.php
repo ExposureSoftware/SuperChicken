@@ -31,5 +31,6 @@ class NightTest extends TestCase
         $this->assertTrue($result->has('successful_hunts') && is_int($result->get('successful_hunts')));
         $this->assertTrue($result->has('noises') && $result->get('noises') instanceof Collection);
         $this->assertTrue($result->has('starved_chickens') && is_int($result->get('starved_chickens')));
+        $this->assertTrue($result->has('chicks') && is_bool($result->get('chicks')));
     }
 }

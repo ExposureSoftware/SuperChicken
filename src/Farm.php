@@ -177,4 +177,15 @@ class Farm
             $this->claims->random()->chickens()->random()->expire();
         }
     }
+
+    /**
+     * Randomly spawn a Chicken.
+     *
+     * @return Chicken
+     */
+    public function hatchEgg()
+    {
+        $this->stimulated(false);
+        return $this->claims->random()->hatchEgg();
+    }
 }

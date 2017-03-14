@@ -9,6 +9,7 @@
 namespace Tests;
 
 
+use ExposureSoftware\SuperChicken\Animals\Avians\Chicken;
 use ExposureSoftware\SuperChicken\Claim;
 use ExposureSoftware\SuperChicken\Farm;
 use Illuminate\Support\Collection;
@@ -92,5 +93,19 @@ class FarmTest extends TestCase
     public function testCollectEggs()
     {
         $this->assertTrue(is_int((new Farm())->collectEggs()));
+    }
+
+    public function hatchEgg()
+    {
+        $farm = new Farm();
+        $population = $farm->population();
+
+        $this->assertFalse($farm->stimulated());
+
+        $farm->stimulated(true);
+        $result = $farm->hatchEgg();
+
+        $this->assertInstanceOf(Chicken::class, $result);
+        $this->assertEquals($population + 1, $farm->population());
     }
 }

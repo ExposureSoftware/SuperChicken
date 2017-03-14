@@ -77,6 +77,10 @@ while ($running && $farm->population() > 0) {
                 echo 'Something made a ' . $events->get('noises')->implode(' and a ') . ' in the night.' . PHP_EOL;
             }
 
+            if ($events->get('chicks')) {
+                echo 'A new chicken was born! Yay! So cute.' . PHP_EOL;
+            }
+
             if ($events->get('successful_hunts') > 0) {
                 echo 'Foxes came and ate ' . $events->get('successful_hunts') . ' of your chickens in the night.' . PHP_EOL;
             }
