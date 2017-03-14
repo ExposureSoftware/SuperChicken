@@ -11,6 +11,7 @@
  */
 
 use ExposureSoftware\SuperChicken\Animals\Avians\Chicken;
+use ExposureSoftware\SuperChicken\Night;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
@@ -24,7 +25,7 @@ echo "Congratulations your {$farm->size()} acre farm has {$farm->population()} c
 echo 'You will be able to plan each day, then be reported on what happens in the night.' . PHP_EOL;
 
 $running = true;
-while ($running) {
+while ($running && $farm->population() > 0) {
     echo 'Select an action:' . PHP_EOL;
     echo '1) Feed Chickens.' . PHP_EOL;
     echo '2) Play some jazz music for your Chickens.' . PHP_EOL;
@@ -33,7 +34,7 @@ while ($running) {
     echo '5) Check on Chickens.' . PHP_EOL;
     echo '6) Rest for the day.' . PHP_EOL;
     echo PHP_EOL . '0) Exit' . PHP_EOL;
-    $option = readline('Choice: ' . PHP_EOL);
+    $option = readline('Choice: ');
 
     switch ($option) {
         case 0:
@@ -43,14 +44,16 @@ while ($running) {
             do {
                 $pellets = readline('How many Chick-O-Pellets do you feed? [integer] ' );
             } while (!is_numeric($pellets));
+            $farm->store($pellets);
             $farm->feed();
+            echo "Your farm has {$farm->foodSupply()} pellets remaining. Let's hope that's enough." . PHP_EOL;
             break;
         case 2:
             echo 'The Chickens liked that! Some of them start dancing with each other.' . PHP_EOL;
             $farm->stimulated(true);
             break;
         case 3:
-            echo "You collect {$farm->collectEggs()->count()} eggs and don't even get pecked!" . PHP_EOL;
+            echo "You collect {$farm->collectEggs()} eggs and don't even get pecked!" . PHP_EOL;
             break;
         case 4:
             echo 'Delicious! The Chicken is moist, and tender. You\'ll miss that bird.' . PHP_EOL;
@@ -67,8 +70,24 @@ while ($running) {
             echo "You currently have {$hens->count()} hens and {$roosters->count()} roosters." . PHP_EOL;
             break;
         case 6:
-            $farm->night();
-            echo 'You rest well, dreaming of plump birds. A new day dawns.' . PHP_EOL;
+            $night = new Night($farm);
+            $events = $night->fall();
+
+            if ($events->get('noises')->isNotEmpty()) {
+                echo 'Something made a ' . $events->get('noises')->implode(' and a ') . ' in the night.' . PHP_EOL;
+            }
+
+            if ($events->get('successful_hunts') > 0) {
+                echo 'Foxes came and ate ' . $events->get('successful_hunts') . ' of your chickens in the night.' . PHP_EOL;
+            }
+
+            if ($events->get('starved_chickens') > 0) {
+                echo $events->get('starved_chickens') . ' chickens starved without food.' . PHP_EOL;
+            }
+
+            echo ($farm->population()
+                ? 'You rest well, dreaming of plump birds. A new day dawns.'
+                : 'All your chickens have died.') . PHP_EOL;
             break;
         default:
             echo 'Not a valid choice.' . PHP_EOL;
