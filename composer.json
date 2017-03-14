@@ -3,6 +3,12 @@
     "phpunit/phpunit": "^6.0"
   },
   "autoload": {
-    "psr-4": {"ExposureSoftware\\Chicken\\": "src/"}
+    "psr-4": {"ExposureSoftware\\SuperChicken\\": "src/"}
+  },
+  "autoload-dev": {
+    "psr-4": {"Tests\\": "tests/"}
+  },
+  "require": {
+    "tightenco/collect": "^5.4"
   }
 }
