@@ -86,7 +86,8 @@ class Farm
                 $satiated = false;
                 while (!$satiated && $this->units_food > 0) {
                     try {
-                        $satiated = $chicken->eat(1);
+                        $chicken->eat(1);
+                        $satiated = $chicken->satiated();
 
                     } catch (Necromancy $exception) {
                         continue;
